@@ -419,6 +419,25 @@ $ dd if=/dev/zero of=$HOME/exa_template/data/storage/dev.1 bs=1M count=1 seek=99
 
 This will create a sparse file of 1GB (1000 blocks of 1 MB) that holds the data. Adjust the size of the data file to your needs. Repeat this step to create multiple file devices.
 
+In production it is recommended to use plain block disk devices. In order to use block devices one needs to create a link in storage directory: 
+```console
+$ cp -a /dev/xvdb $HOME/exa_template/data/storage/
+```
+One needs to edit EXAConf file accordingly: 
+```console
+[Node : 11]
+	...
+	[[Disk : default]]
+		Devices = xvdb
+```
+It is also supported to have more than one block disk devices. All block devices should have a link as above example, in additon, one needs to list all devices with comma separated like below: 
+```console
+[Node : 11]
+	...
+	[[Disk : default]]
+		Devices = xvdb, xvdc
+```
+
 **NOTE: Alternatively you can use an existing block-device by creating a special device file with the corresponding major and minor number (using `mknod`) named `dev.1` in the same directory.**
 
 **NOTE: The data file (or device) should be slightly bigger (~1%) than the required space for the volume, because a part of it will be reserved for metadata and checksums.**
